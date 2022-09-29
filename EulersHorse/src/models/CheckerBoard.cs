@@ -13,7 +13,7 @@ namespace EulersHorse.src.models {
 
             for (int x = 0; x < size; x++)
             {
-                for (int y = 0; y < size; y++) 
+                for (int y = 0; y < size; y++)
                 {
                     Squares[x, y] = new Square((x, y));
                 }
@@ -46,7 +46,7 @@ namespace EulersHorse.src.models {
                 int nextY = squareCoords.yCoord + translation.yCoord;
 
                 if (Validation.ValidatePos(Size, (nextX, nextY)) &&
-                    Squares[nextX, nextY].Value == 0)
+                    !Squares[nextX, nextY].WasVisited)
                 {
                     numOfMoves++;
                 }
@@ -56,10 +56,17 @@ namespace EulersHorse.src.models {
 
         public void DisplayBoard ()
         {
+            int numOfMaxDigits = (Size * Size).ToString().Length;
+
             for (int x = 0; x < Size; x++)
             {
                 for (int y = 0; y < Size; y++)
                 {
+                    int numOfDigits = Squares[y, x].Value.ToString().Length;
+                    for (int z = numOfDigits; z < numOfMaxDigits; z++)
+                    {
+                        Console.Write(0);
+                    }
                     Console.Write(Squares[y, x].Value + " ");
                 }
                 Console.WriteLine();
