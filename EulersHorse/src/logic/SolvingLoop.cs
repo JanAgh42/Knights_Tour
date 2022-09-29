@@ -7,60 +7,54 @@ namespace EulersHorse.src.logic {
         public CheckerBoard Board { get; set; }
         public Knight Knight { get; set; }
 
-        private bool isLooping = true;
         private int currentValue = 1;
-        private readonly Stopwatch stopWatch = new Stopwatch();
 
-        public SolvingLoop (int size, (int, int) coords)
-        {
+        public SolvingLoop (int size, (int, int) coords) {
             Board = new CheckerBoard(size);
             Knight = new Knight(coords);
 
             Board.MarkSquare(currentValue, Knight.GetCoords, (0, 0));
 
-            if(SecondLoop()) {
+            Counter.Get().Start();
+
+            if (SecondLoop()) {
+                Counter.Get().Stop();
                 Board.DisplayBoard();
             }
             else {
-                Console.WriteLine("no solution");
+                Console.WriteLine(Counter.Get().IsOverLimit ? "Elapsed time" : $"No solution: {Counter.Get().GetMilliseconds()}ms");
             }
         }
 
         public bool SecondLoop()
         {
-                if (currentValue == Board.Size * Board.Size)
-                {
+                if (currentValue == Board.Size * Board.Size) {
                     return true;
                 }
 
+                if (Counter.Get().IsOverLimit) {
+                    return false;
+                }
+
                 var orderedTranslations = RankTranslations(Knight.GetCoords);
-                orderedTranslations.Add((0, (0, 0)));
 
                 foreach (var tr in orderedTranslations)
                 {
-                    if(tr.Item2.Item2 == tr.Item2.Item1)
-                    {
-                        return false;
+                    var newTranslation = tr.Item2;
+                    var previousPos = Knight.GetCoords;
+                    
+                    Knight.TranslateForward(newTranslation);
+                    Board.MarkSquare(++currentValue, Knight.GetCoords, previousPos);
+
+                    if (SecondLoop()) {
+                        return true;
                     }
-                    else
-                    {
-                        var newTranslation = tr.Item2;
-
-                        var previousPos = Knight.GetCoords;
-                        Knight.TranslateForward(newTranslation);
-                        Board.MarkSquare(++currentValue, Knight.GetCoords, previousPos);
-
-                        if(SecondLoop()){
-                            return true;
-                        }
-                        else {
-                            //Console.WriteLine("ret");
-                            BackToPreviousSquare(Knight.GetCoords);
-                            Knight.TranslateBackward(newTranslation);
-                        }
+                    else {
+                        BackToPreviousSquare(Knight.GetCoords);
+                        Knight.TranslateBackward(newTranslation);
                     }
                 }
-                return false;
+            return false;
         }
 
         public List<(int, (int, int))> RankTranslations ((int xCoord, int yCoord) knightCoords)
@@ -73,8 +67,7 @@ namespace EulersHorse.src.logic {
                 int nextY = knightCoords.yCoord + translation.yCoord;
 
                 if (Validation.ValidatePos(Board.Size, (nextX, nextY)) &&
-                    !Board.Squares[nextX, nextY].WasVisited)
-                {
+                    !Board.Squares[nextX, nextY].WasVisited) {
                     var onwardMoves = Board.GetOnwardMovesFromSquare((nextX, nextY));
 
                     rankedTranslations.Add((onwardMoves, translation));

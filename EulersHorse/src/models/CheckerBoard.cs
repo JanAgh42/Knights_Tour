@@ -24,8 +24,7 @@ namespace EulersHorse.src.models {
         {
             Squares[squareCoords.x, squareCoords.y].Value = value;
 
-            if(prevCoords != (0, 0))
-            {
+            if (prevCoords != (0, 0)) {
                 Squares[squareCoords.x, squareCoords.y].Previous = Squares[prevCoords.x, prevCoords.y];
             }
         }
@@ -46,8 +45,7 @@ namespace EulersHorse.src.models {
                 int nextY = squareCoords.yCoord + translation.yCoord;
 
                 if (Validation.ValidatePos(Size, (nextX, nextY)) &&
-                    !Squares[nextX, nextY].WasVisited)
-                {
+                    !Squares[nextX, nextY].WasVisited) {
                     numOfMoves++;
                 }
             }
@@ -58,19 +56,17 @@ namespace EulersHorse.src.models {
         {
             int numOfMaxDigits = (Size * Size).ToString().Length;
 
-            for (int x = 0; x < Size; x++)
-            {
-                for (int y = 0; y < Size; y++)
-                {
+            for (int x = 0; x < Size; x++) {
+                for (int y = 0; y < Size; y++) {
                     int numOfDigits = Squares[y, x].Value.ToString().Length;
-                    for (int z = numOfDigits; z < numOfMaxDigits; z++)
-                    {
+                    for (int z = numOfDigits; z < numOfMaxDigits; z++) {
                         Console.Write(0);
                     }
                     Console.Write(Squares[y, x].Value + " ");
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine($"Elapsed time: {Counter.Get().GetMilliseconds()}ms");
         }
     }
 }

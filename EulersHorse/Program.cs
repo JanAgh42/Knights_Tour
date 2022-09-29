@@ -6,14 +6,23 @@ namespace EulersHorse
     {
         static void Main(string[] args)
         {
-            Console.Write("Rozmer sachovnice: ");
-            int size = Convert.ToInt32(Console.ReadLine());
-            Console.Write("X: ");
-            int x = Convert.ToInt32(Console.ReadLine());
-            Console.Write("Y: ");
-            int y = Convert.ToInt32(Console.ReadLine());
+            SolvingLoop loop;
+            int size, x, y;
+            do {
+                Console.Write("Rozmer sachovnice: ");
+                size = Convert.ToInt32(Console.ReadLine());
 
-            SolvingLoop loop = new SolvingLoop(size, (x - 1, y - 1));
+                if (size <= 0) {
+                    break;
+                }
+
+                Console.Write("X: ");
+                x = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Y: ");
+                y = Convert.ToInt32(Console.ReadLine());
+
+                loop = new SolvingLoop(size, (x - 1, y - 1));
+            } while(size > 0);
         }
     }
 }
