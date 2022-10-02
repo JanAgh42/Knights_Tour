@@ -1,5 +1,3 @@
-using EulersHorse.src.models;
-
 namespace EulersHorse.src.logic {
     static class Validation {
 

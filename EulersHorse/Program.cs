@@ -12,7 +12,7 @@ namespace EulersHorse
                 Console.Write("Rozmer sachovnice: ");
                 size = Convert.ToInt32(Console.ReadLine());
 
-                if (size <= 0) {
+                if (size <= 4) {
                     break;
                 }
 

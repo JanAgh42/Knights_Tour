@@ -1,6 +1,7 @@
 using System.Diagnostics;
 
 namespace EulersHorse.src.logic {
+    // singleton class
     class Counter {
         private static Counter instance = null!;
         private readonly Stopwatch _counter;
@@ -9,6 +10,7 @@ namespace EulersHorse.src.logic {
             _counter = new Stopwatch();
         }
 
+        // returns the existing Counter instance (or creates one if null)
         public static Counter Get ()
         {
             if(instance == null) {
@@ -17,6 +19,7 @@ namespace EulersHorse.src.logic {
             return instance;
         }
 
+        // starts / restarts time measurement
         public void Start ()
         {
             if (_counter.ElapsedMilliseconds > 0) {
@@ -27,16 +30,19 @@ namespace EulersHorse.src.logic {
             }
         }
 
+        // stops time measurement
         public void Stop ()
         {
             _counter.Stop();
         }
 
+        // returns the number of elapsed milliseconds with a precision of 3 decimal places
         public double GetMilliseconds ()
         {
             return _counter.ElapsedTicks / (Stopwatch.Frequency / (1000L * 1000L)) / 1000.0;
         }
 
+        // lambda for determining if the input is solvable
         public bool IsOverLimit => GetMilliseconds() > 20000;
     }
 }

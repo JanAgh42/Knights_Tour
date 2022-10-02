@@ -8,6 +8,7 @@ namespace EulersHorse.src.logic {
         public Knight Knight { get; set; }
 
         private int currentValue = 1;
+        private int numOfAttempts = 0;
 
         public SolvingLoop (int size, (int, int) coords) {
             Board = new CheckerBoard(size);
@@ -17,28 +18,31 @@ namespace EulersHorse.src.logic {
 
             Counter.Get().Start();
 
-            if (SecondLoop()) {
+            if (SolveNextStep()) {
                 Counter.Get().Stop();
                 Board.DisplayBoard();
             }
             else {
                 Console.WriteLine(Counter.Get().IsOverLimit ? "Elapsed time" : $"No solution: {Counter.Get().GetMilliseconds()}ms");
             }
+            Console.WriteLine($"Execution took {numOfAttempts} steps");
         }
 
-        public bool SecondLoop()
+        public bool SolveNextStep()
         {
-                if (currentValue == Board.Size * Board.Size) {
+                numOfAttempts++;
+
+                // if we managed to fill in the last position, the tour is completed
+                if (currentValue == Board.NumOfSquares) {
                     return true;
                 }
 
+                // if the solution is taking too long to compute, end execution
                 if (Counter.Get().IsOverLimit) {
                     return false;
                 }
 
-                var orderedTranslations = RankTranslations(Knight.GetCoords);
-
-                foreach (var tr in orderedTranslations)
+                foreach (var tr in RankTranslations(Knight.GetCoords))
                 {
                     var newTranslation = tr.Item2;
                     var previousPos = Knight.GetCoords;
@@ -46,8 +50,11 @@ namespace EulersHorse.src.logic {
                     Knight.TranslateForward(newTranslation);
                     Board.MarkSquare(++currentValue, Knight.GetCoords, previousPos);
 
-                    if (SecondLoop()) {
+                    if (SolveNextStep()) {
                         return true;
+                    }
+                    else if (Counter.Get().IsOverLimit) {
+                        break;
                     }
                     else {
                         BackToPreviousSquare(Knight.GetCoords);
@@ -80,6 +87,5 @@ namespace EulersHorse.src.logic {
         {
             currentValue--;
             Board.UnmarkSquare(knightCoords);
-        }
-    }
+        }    }
 }

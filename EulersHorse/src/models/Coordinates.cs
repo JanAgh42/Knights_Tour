@@ -9,6 +9,7 @@ namespace EulersHorse.src.models {
             YCoord = coords.yCoord;
         }
 
+        // returns the coordinates of a given entity encapsulated in a tupple
         public (int, int) GetCoords => (XCoord, YCoord);
     }
 }

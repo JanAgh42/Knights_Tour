@@ -5,6 +5,7 @@ namespace EulersHorse.src.models {
 
         public Square ((int, int) coords) : base (coords) {}
 
+        // lambda for determining if the square has already been visited (marked)
         public bool WasVisited => Value != 0;
     }
 }

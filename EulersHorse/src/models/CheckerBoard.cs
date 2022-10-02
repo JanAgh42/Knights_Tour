@@ -5,12 +5,15 @@ namespace EulersHorse.src.models {
     class CheckerBoard {
         public Square[,] Squares { get; private set; }
         public int Size { get; private set; }
+        public int NumOfSquares { get; private set; }
 
         public CheckerBoard (int size = 8)
         {
             Size = size;
+            NumOfSquares = size * size;
             Squares = new Square[size, size];
 
+            // fills up the Squares 2D array with Square instances (+ their coordinates)
             for (int x = 0; x < size; x++)
             {
                 for (int y = 0; y < size; y++)
@@ -20,6 +23,7 @@ namespace EulersHorse.src.models {
             }
         }
 
+        // saves the current value int the selected square with a link to its parent
         public void MarkSquare (int value, (int x, int y) squareCoords, (int x, int y) prevCoords)
         {
             Squares[squareCoords.x, squareCoords.y].Value = value;
@@ -29,12 +33,15 @@ namespace EulersHorse.src.models {
             }
         }
 
+        // deletes the value as well as link to parent from a selected square
+        // called when the night reaches a dead end during exec
         public void UnmarkSquare ((int x, int y) squareCoords)
         {
             Squares[squareCoords.x, squareCoords.y].Value = 0;
             Squares[squareCoords.x, squareCoords.y].Previous = null!;
         }
 
+        // returns the number of legal moves the night can make from a selected square
         public int GetOnwardMovesFromSquare ((int xCoord, int yCoord) squareCoords)
         {
             int numOfMoves = 0;
@@ -52,6 +59,7 @@ namespace EulersHorse.src.models {
             return numOfMoves;
         }
 
+        // formats and outputs the boards content into the console
         public void DisplayBoard ()
         {
             int numOfMaxDigits = (Size * Size).ToString().Length;
