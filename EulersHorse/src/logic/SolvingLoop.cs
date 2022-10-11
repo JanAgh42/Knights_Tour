@@ -14,13 +14,14 @@ namespace EulersHorse.src.logic {
             Board = new CheckerBoard(size);
             Knight = new Knight(coords);
 
-            Board.MarkSquare(currentValue, Knight.GetCoords, (0, 0));
+            Board.MarkSquare(currentValue, Knight.GetCoords, (-1, -1), (0, 0));
 
             Counter.Get().Start();
 
             if (SolveNextStep()) {
                 Counter.Get().Stop();
                 Board.DisplayBoard();
+                Board.DisplaySteps();
             }
             else {
                 Console.WriteLine(Counter.Get().IsOverLimit ? "Elapsed time" : $"No solution: {Counter.Get().GetMilliseconds()}ms");
@@ -28,6 +29,7 @@ namespace EulersHorse.src.logic {
             Console.WriteLine($"Execution took {numOfAttempts} steps");
         }
 
+        // brain of the entire program - 
         public bool SolveNextStep()
         {
                 numOfAttempts++;
@@ -42,21 +44,24 @@ namespace EulersHorse.src.logic {
                     return false;
                 }
 
+                // iterating through every possible valid move
                 foreach (var tr in RankTranslations(Knight.GetCoords))
                 {
                     var newTranslation = tr.Item2;
                     var previousPos = Knight.GetCoords;
                     
+                    // moving the knight forward using the selected move
                     Knight.TranslateForward(newTranslation);
-                    Board.MarkSquare(++currentValue, Knight.GetCoords, previousPos);
+                    Board.MarkSquare(++currentValue, Knight.GetCoords, previousPos, newTranslation);
 
+                    // recursive calling
                     if (SolveNextStep()) {
                         return true;
-                    }
+                    }                       // if the timer runs out, stop the execution
                     else if (Counter.Get().IsOverLimit) {
                         break;
                     }
-                    else {
+                    else {      // executed when SolveNextStep() returns false (knight found a dead end)
                         BackToPreviousSquare(Knight.GetCoords);
                         Knight.TranslateBackward(newTranslation);
                     }
@@ -64,6 +69,7 @@ namespace EulersHorse.src.logic {
             return false;
         }
 
+        // ranks every possible translation based on their cost according to Warnnsdorfs rule
         public List<(int, (int, int))> RankTranslations ((int xCoord, int yCoord) knightCoords)
         {
             var rankedTranslations = new List<(int, (int, int))>();
@@ -80,12 +86,15 @@ namespace EulersHorse.src.logic {
                     rankedTranslations.Add((onwardMoves, translation));
                 }
             }
+            // orders every found legal translation from cheapest to most expensive
             return rankedTranslations.OrderBy(tr => tr.Item1).ToList();
         }
 
+        // deletes a given square from the sequence of visited squares
         public void BackToPreviousSquare ((int, int) knightCoords)
         {
             currentValue--;
             Board.UnmarkSquare(knightCoords);
-        }    }
+        }    
+    }
 }

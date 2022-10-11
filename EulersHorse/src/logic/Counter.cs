@@ -5,6 +5,7 @@ namespace EulersHorse.src.logic {
     class Counter {
         private static Counter instance = null!;
         private readonly Stopwatch _counter;
+        public int TimerLimit { get; set; }
 
         private Counter () {
             _counter = new Stopwatch();
@@ -43,6 +44,6 @@ namespace EulersHorse.src.logic {
         }
 
         // lambda for determining if the input is solvable
-        public bool IsOverLimit => GetMilliseconds() > 20000;
+        public bool IsOverLimit => GetMilliseconds() > TimerLimit * 1000;
     }
 }

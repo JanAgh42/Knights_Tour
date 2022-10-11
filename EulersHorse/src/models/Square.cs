@@ -1,6 +1,7 @@
 namespace EulersHorse.src.models {
     class Square : Coordinates {
         public Square Previous { get; set; } = null!;
+        public (int, int) Operator { get; set; } = (0, 0);
         public int Value { get; set; } = 0;
 
         public Square ((int, int) coords) : base (coords) {}
